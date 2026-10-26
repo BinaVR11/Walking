@@ -41,7 +41,7 @@ const levels = [
     {
         id: 2,
         name: "PRIMERA INFANCIA",
-        panorama: "N2/motriz.jpg",
+        panorama: "N2/recep.jpg",
         areas: [
             {
                 title: "ZONA PSICOMOTRIZ",
@@ -61,7 +61,7 @@ const levels = [
             {
                 title: "LACTANCIA Y ESTIMULACIÓN",
                 text: "Cabinas de confort para madres y bebés con mobiliario ergonómico y tranquilidad.",
-                image: "N2/motriz.jpg"
+                image: "N2/recep.jpg"
             }
         ]
     },
