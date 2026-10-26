@@ -1,0 +1,678 @@
+:root {
+  --blue: #073A69;
+  --dark-blue: #04213d;
+  --white: #ffffff;
+  --soft-blue: #dcecf9;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: #080a0d;
+  color: var(--white);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+button { font: inherit; }
+
+.view {
+  display: none;
+  min-height: 100vh;
+  position: relative;
+}
+.view.active {
+  display: block;
+  animation: pageIn .6s var(--ease) both;
+}
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.transition-layer {
+  position: fixed;
+  inset: 0;
+  background: var(--blue);
+  transform: translateY(100%);
+  z-index: 100;
+  pointer-events: none;
+}
+.transition-layer.go {
+  animation: transition .72s var(--ease) both;
+}
+@keyframes transition {
+  0% { transform: translateY(100%); }
+  45% { transform: translateY(0); }
+  55% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+/* =========================================================
+   PANTALLA DE INICIO (INTACTA)
+   ========================================================= */
+#homeView {
+  min-height: 100svh;
+  overflow: hidden;
+}
+.home-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+}
+.home-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, .25), rgba(4, 33, 61, .6));
+}
+.home-content {
+  position: relative;
+  z-index: 2;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 5vh 6vw;
+  color: white;
+}
+.brand-logo { width: min(15vw, 170px); min-width: 90px; margin-bottom: 4vh; filter: brightness(0) invert(1); }
+.welcome { font-size: clamp(42px, 5vw, 88px); font-weight: 900; margin: 0; }
+.welcome-small { font-size: clamp(38px, 4vw, 76px); font-weight: 900; margin: 0 0 4vh; }
+.home-content h1 {
+  font-size: clamp(80px, 10vw, 190px);
+  line-height: .9;
+  margin: 0 0 8vh;
+  font-weight: 900;
+}
+.primary-btn {
+  border: 0;
+  background: var(--blue);
+  color: white;
+  padding: 1.25rem 3rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: clamp(16px, 1.5vw, 28px);
+  cursor: pointer;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .25);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+}
+.primary-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 22px 50px rgba(0, 0, 0, .3); }
+.primary-btn:active { transform: scale(.98); }
+
+/* =========================================================
+   PANTALLA DE SELECCIÓN (SVG INTACTO)
+   ========================================================= */
+#levelsView {
+  padding: 0;
+  min-height: 100svh;
+  background: #080a0d;
+}
+.interactive-levels {
+  min-height: 100svh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#levelsView .stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#levelsView #building {
+  display: block;
+  width: min(100vw, calc(100svh * .5625));
+  height: auto;
+  max-height: 100svh;
+  aspect-ratio: 9/16;
+  border: 0;
+}
+
+/* =========================================================
+   FONDO ESTÁTICO DIFUMINADO (NO GIRA)
+   ========================================================= */
+#detailView {
+  position: relative;
+  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
+  background: #030d17;
+}
+
+.static-bg-layer {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px) brightness(0.38);
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.static-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(7, 58, 105, 0.45) 0%, rgba(2, 10, 18, 0.9) 100%);
+  pointer-events: none;
+}
+
+/* Botón flotante para regresar */
+.back-btn {
+  position: fixed;
+  top: 26px;
+  left: 26px;
+  z-index: 40;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(7, 58, 105, 0.85);
+  color: #fff;
+  font-size: 24px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform .25s ease, background .25s ease;
+}
+.back-btn:hover {
+  transform: scale(1.08);
+  background: var(--blue);
+}
+
+/* =========================================================
+   CUADRO AZUL CON VISOR EQUIRRECTANGULAR 360°
+   ========================================================= */
+.card-360-wrapper {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-360 {
+  width: min(92vw, 680px);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.16);
+  background: #073A69;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-360-header {
+  height: 52px;
+  background: #073A69;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px 0 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 5;
+}
+.card-header-tag {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  color: rgba(255, 255, 255, 0.9);
+}
+.card-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #073A69;
+  border: none;
+  font-size: 15px;
+  font-weight: 900;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: transform .2s ease, background .2s ease;
+}
+.card-close-btn:hover {
+  transform: scale(1.1);
+  background: #dcecf9;
+}
+
+.card-360-viewer {
+  position: relative;
+  width: 100%;
+  height: clamp(340px, 48vh, 500px);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  background: #041c33;
+}
+.card-360-viewer:active {
+  cursor: grabbing;
+}
+#cardPanoCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.card-overlay-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 20px 20px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(7, 58, 105, 0.45) 0%, transparent 45%, rgba(2, 12, 22, 0.55) 100%);
+}
+
+.card-titles {
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+}
+.card-level-eyebrow {
+  display: block;
+  font-size: clamp(13px, 1.6vw, 17px);
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: #ffffff;
+  opacity: .95;
+}
+.card-level-title {
+  font-size: clamp(32px, 4.8vw, 52px);
+  font-weight: 900;
+  letter-spacing: .02em;
+  color: #ffffff;
+  line-height: 1.05;
+}
+
+/* =========================================================
+   PUNTO BLANCO PALPITANTE INTERACTIVO (UBICADO ABAJO)
+   ========================================================= */
+.pulsing-hotspot {
+  pointer-events: all;
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%);
+  width: 68px;
+  height: 68px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: transform .25s ease;
+}
+.pulsing-hotspot:hover {
+  transform: translateX(-50%) scale(1.12);
+}
+.pulsing-hotspot:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+.hotspot-center-dot {
+  position: relative;
+  z-index: 3;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 1), 0 0 32px rgba(126, 190, 232, 0.95);
+}
+
+.hotspot-halo-inner {
+  position: absolute;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  animation: pulseInner 1.8s infinite ease-out;
+}
+
+.hotspot-halo-outer {
+  position: absolute;
+  z-index: 1;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(220, 236, 249, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  animation: pulseOuter 1.8s infinite ease-out;
+}
+
+@keyframes pulseInner {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+@keyframes pulseOuter {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.hotspot-caption {
+  position: absolute;
+  bottom: -22px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  color: #ffffff;
+  background: rgba(7, 58, 105, 0.9);
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================================
+   MODAL DE ÁREAS (360° INTERACTIVO SOLO AL TOCAR)
+   ========================================================= */
+.options-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(2, 12, 22, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 3vw, 28px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s var(--ease);
+}
+.options-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.options-modal-window {
+  width: min(100%, 720px);
+  background: rgba(7, 58, 105, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
+  padding: clamp(18px, 3vw, 32px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: translateY(20px) scale(0.98);
+  transition: transform .35s var(--ease);
+}
+.options-modal-backdrop.active .options-modal-window {
+  transform: translateY(0) scale(1);
+}
+
+.modal-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  padding-bottom: 12px;
+}
+.modal-level-tag {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: var(--soft-blue);
+}
+.modal-main-title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 900;
+  color: #ffffff;
+}
+.modal-close-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background .2s ease, transform .2s ease;
+}
+.modal-close-icon-btn:hover {
+  background: #fff;
+  color: #073A69;
+  transform: scale(1.08);
+}
+
+/* Pastillas de áreas */
+.area-stepper-pills {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.area-stepper-pills::-webkit-scrollbar { display: none; }
+
+.stepper-pill {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(4, 33, 61, 0.5);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .25s ease, border-color .25s ease;
+}
+.stepper-pill .pill-number {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+}
+.stepper-pill.active {
+  background: #ffffff;
+  color: #073A69;
+  border-color: #ffffff;
+}
+.stepper-pill.active .pill-number {
+  background: #073A69;
+  color: #ffffff;
+}
+
+/* Cuadrito difuminado azul: Área activa */
+.active-area-card {
+  background: rgba(4, 33, 61, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Visor 360 del área en el modal */
+.active-area-media {
+  position: relative;
+  width: 100%;
+  height: clamp(200px, 28vh, 300px);
+  background: #021120;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+.active-area-media:active {
+  cursor: grabbing;
+}
+#modalPanoCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.active-area-counter {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 5;
+  background: rgba(7, 58, 105, 0.88);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Indicador de deslizamiento 360 */
+.modal-pano-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 5;
+  background: rgba(7, 58, 105, 0.75);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.hint-icon {
+  font-size: 14px;
+}
+
+.active-area-info {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.active-area-title {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 900;
+  color: #ffffff;
+}
+.active-area-desc {
+  font-size: clamp(13px, 1.25vw, 15px);
+  line-height: 1.45;
+  color: #dcecf9;
+}
+
+/* Barra inferior de navegación */
+.modal-nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.nav-step-btn {
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: clamp(14px, 1.4vw, 16px);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+.nav-step-btn.secondary {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.nav-step-btn.primary {
+  background: #DCECF9;
+  color: #073A69;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+.nav-step-btn:hover {
+  transform: translateY(-2px);
+}
+.nav-step-btn.primary:hover {
+  background: #ffffff;
+}
+
+.step-dots-indicator {
+  display: flex;
+  gap: 8px;
+}
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  transition: background .25s ease, transform .25s ease;
+}
+.step-dot.active {
+  background: #ffffff;
+  transform: scale(1.4);
+}
+
+/* =========================================================
+   ADAPTACIONES PARA PANTALLAS VERTICALES
+   ========================================================= */
+@media (max-width: 600px) {
+  .card-360-viewer {
+    height: 360px;
+  }
+  .card-overlay-content {
+    padding: 18px 14px;
+  }
+  .pulsing-hotspot {
+    bottom: 20%;
+  }
+  .back-btn {
+    top: 14px;
+    left: 14px;
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+  .options-modal-window {
+    padding: 16px;
+    gap: 12px;
+  }
+  .active-area-media {
+    height: 220px;
+  }
+  .active-area-info {
+    padding: 14px 16px;
+  }
+}

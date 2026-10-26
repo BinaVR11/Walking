@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BINAES — Experiencia Interactiva</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- PANTALLA DE INICIO (INTACTA) -->
+    <main class="view active" id="homeView" aria-label="Inicio">
+      <img id="homeImage" class="home-bg" alt="Imagen principal de inicio">
+      <div class="home-overlay"></div>
+      <div class="home-content">
+        <img class="brand-logo" src="assets/escudo.png" alt="BINAES">
+        <p class="welcome">BIENVENIDO</p>
+        <p class="welcome-small">A</p>
+        <h1>BINAES</h1>
+        <button class="primary-btn" id="startBtn">PRESIONA PARA CONTINUAR <span>→</span></button>
+      </div>
+    </main>
+
+    <!-- SELECCIÓN INTERACTIVA (INTACTA) -->
+    <main class="view" id="levelsView" aria-label="Selección interactiva de nivel">
+      <div class="interactive-levels">
+        <main class="stage">
+          <object id="building" data="vectorial-interactivo.svg" type="image/svg+xml" aria-label="Edificio con siete niveles interactivos"></object>
+        </main>
+      </div>
+    </main>
+
+    <!-- DETALLE DEL NIVEL: VISOR EQUIRRECTANGULAR 360° Y MODAL DESPLEGABLE -->
+    <main class="view" id="detailView" aria-label="Detalle del nivel">
+
+      <!-- FONDO ESTÁTICO DIFUMINADO (NO GIRA) -->
+      <div class="static-bg-layer" id="staticBg"></div>
+      <div class="static-bg-overlay"></div>
+
+      <!-- BOTÓN REGRESAR A NIVELES -->
+      <button class="icon-btn back-btn" id="backBtn" aria-label="Regresar a selección de nivel" title="Regresar">←</button>
+
+      <!-- VENTANA / CUADRO AZUL CENTRAL -->
+      <div class="card-360-wrapper">
+        <section class="card-360" id="card360">
+
+          <!-- BARRA SUPERIOR AZUL MARINO CON BOTÓN X -->
+          <div class="card-360-header">
+            <span class="card-header-tag" id="cardHeaderTag">BINAES 360°</span>
+            <button class="card-close-btn" id="closeToLevelsBtn" aria-label="Cerrar y volver a niveles" title="Cerrar">✕</button>
+          </div>
+
+          <!-- CONTENEDOR EQUIRRECTANGULAR 360° PRINCIPAL -->
+          <div class="card-360-viewer" id="cardPanoContainer">
+            <canvas id="cardPanoCanvas"></canvas>
+
+            <!-- CAPA SUPERIOR CON TÍTULO Y PUNTO PALPITANTE INFERIOR -->
+            <div class="card-overlay-content">
+              
+              <!-- TÍTULOS SUPERIORES DEL NIVEL -->
+              <div class="card-titles">
+                <span class="card-level-eyebrow" id="cardLevelEyebrow">NIVEL 1</span>
+                <h2 class="card-level-title" id="cardLevelTitle">RECEPCIÓN</h2>
+              </div>
+
+              <!-- PUNTO BLANCO PALPITANTE INTERACTIVO (UBICADO ABAJO) -->
+              <button class="pulsing-hotspot" id="pulsingHotspot" aria-label="Explorar áreas del nivel" title="Toca para explorar">
+                <span class="hotspot-halo-outer"></span>
+                <span class="hotspot-halo-inner"></span>
+                <span class="hotspot-center-dot"></span>
+                <span class="hotspot-caption">TOCA AQUÍ</span>
+              </button>
+
+            </div>
+          </div>
+
+        </section>
+      </div>
+
+      <!-- MODAL CON ÁREAS 360° (SOLO GIRA AL TOCAR) -->
+      <div class="options-modal-backdrop" id="optionsModal" aria-hidden="true">
+        <div class="options-modal-window">
+
+          <div class="modal-topbar">
+            <div>
+              <p class="modal-level-tag" id="modalLevelTag">NIVEL 1</p>
+              <h3 class="modal-main-title" id="modalMainTitle">EXPLORAR ÁREAS</h3>
+            </div>
+            <button class="modal-close-icon-btn" id="closeOptionsModalBtn" aria-label="Cerrar modal">✕</button>
+          </div>
+
+          <!-- PUNTOS DESPLEGABLES / PESTAÑAS RÁPIDAS -->
+          <div class="area-stepper-pills" id="areaStepperPills">
+            <!-- Se generan dinámicamente -->
+          </div>
+
+          <!-- CUADRITO DIFUMINADO AZUL: ÁREA ACTIVA CON VISOR 360° INTEGRADO -->
+          <div class="active-area-card" id="activeAreaCard">
+            
+            <!-- VISOR EQUIRRECTANGULAR 360° DEL ÁREA (SIN GIRO AUTOMÁTICO, SOLO AL TOCAR) -->
+            <div class="active-area-media" id="modalPanoContainer">
+              <canvas id="modalPanoCanvas"></canvas>
+              <span class="active-area-counter" id="activeAreaCounter">1 de 4</span>
+              
+              <!-- INDICADOR INFORMATIVO 360° -->
+              <div class="modal-pano-hint">
+                <span class="hint-icon">🔄</span>
+                <span>Desliza para girar en 360°</span>
+              </div>
+            </div>
+
+            <!-- INFORMACIÓN DESCRIPTIVA -->
+            <div class="active-area-info">
+              <h4 class="active-area-title" id="activeAreaTitle">Área</h4>
+              <p class="active-area-desc" id="activeAreaDesc">Descripción</p>
+            </div>
+          </div>
+
+          <!-- BARRA DE NAVEGACIÓN SECUENCIAL (ANTERIOR / SIGUIENTE) -->
+          <div class="modal-nav-controls">
+            <button class="nav-step-btn secondary" id="prevAreaBtn">← Anterior</button>
+            <div class="step-dots-indicator" id="stepDotsIndicator">
+              <!-- Indicadores de puntos -->
+            </div>
+            <button class="nav-step-btn primary" id="nextAreaBtn">Siguiente área →</button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <div class="transition-layer" id="transitionLayer"></div>
+  <script src="script.js"></script>
+</body>
+</html>
